@@ -1,15 +1,27 @@
 import { motion } from 'framer-motion';
-import { Check, Sparkles } from 'lucide-react';
+import { LucideIcon, Sparkles } from 'lucide-react';
 
 interface PriceCardProps {
   title: string;
   price: string;
-  features: string[];
+  subtitle: string;
+  features: { icon: LucideIcon; text: string }[];
+  addons?: { name: string; price: string }[];
+  isMonthly?: boolean;
   isPopular?: boolean;
   index: number;
 }
 
-export default function PriceCard({ title, price, features, isPopular = false, index }: PriceCardProps) {
+export default function PriceCard({ 
+  title, 
+  price, 
+  isMonthly,
+  subtitle,
+  features, 
+  addons,
+  isPopular = false, 
+  index 
+}: PriceCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -39,8 +51,9 @@ export default function PriceCard({ title, price, features, isPopular = false, i
         <h3 className="text-xl font-semibold mb-2 text-gray-900">{title}</h3>
         <div className="flex items-center justify-center gap-1">
           <span className="text-4xl font-bold text-gray-900">{price}</span>
-          <span className="text-gray-600">/month</span>
+          {isMonthly && <span className="text-gray-600">/month</span>}
         </div>
+        <p className="text-sm text-gray-600 mt-2">{subtitle}</p>
       </div>
 
       <ul className="space-y-4 mb-8">
@@ -54,25 +67,38 @@ export default function PriceCard({ title, price, features, isPopular = false, i
             className="flex items-center text-gray-600"
           >
             <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center mr-3 flex-shrink-0">
-              <Check className="w-4 h-4 text-emerald-600" />
+              <feature.icon className="w-4 h-4 text-emerald-600" />
             </div>
-            <span>{feature}</span>
+            <span>{feature.text}</span>
           </motion.li>
         ))}
       </ul>
 
-	  <motion.a
-		href="#contact"
-		whileHover={{ scale: 1.02 }}
-		whileTap={{ scale: 0.98 }}
-		className={`w-full py-4 px-6 rounded-xl font-medium transition-all duration-300 text-center block ${
-			isPopular
-			? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:shadow-lg hover:shadow-emerald-500/20'
-			: 'bg-gray-50 text-gray-900 hover:bg-gray-100 border border-gray-200'
-		}`}
-		>
-		Get Started
-		</motion.a>
+      {addons && addons.length > 0 && (
+        <div className="mb-8">
+          <h4 className="text-sm font-semibold text-gray-900 mb-4">Available Add-ons:</h4>
+          <ul className="space-y-2">
+            {addons.map((addon, index) => (
+              <li key={index} className="text-sm text-gray-600">
+                {addon.name}: <span className="font-medium text-gray-900">+{addon.price}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <motion.a
+        href="#contact"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        className={`w-full py-4 px-6 rounded-xl font-medium transition-all duration-300 text-center block ${
+          isPopular
+            ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:shadow-lg hover:shadow-emerald-500/20'
+            : 'bg-gray-50 text-gray-900 hover:bg-gray-100 border border-gray-200'
+        }`}
+      >
+        Get Started
+      </motion.a>
     </motion.div>
   );
 }
